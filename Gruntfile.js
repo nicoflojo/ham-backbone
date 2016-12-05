@@ -1,16 +1,35 @@
-{
-  browserify: {
-    dubug: {
-      files: { 'build/js/app.js': 'js/apps.js'},
+'use strict';
+module.exports = function (grunt) {
+  grunt.initConfig({
+    clean: {
+      build: ['build']
+    },
+    browserify: {
       options: {
-        dubug: true
+        transform: ['brfs'],
+        debug: true
+      },
+      debug: {
+        files: {
+          'build/bundle.js': 'app/app.js'
+        }
+      }
+    },
+    watch: {
+      app: {
+        files: 'app/**/*.js',
+        tasks: ['browserify'],
+        options: {
+          interrupt: true
+        }
       }
     }
-  }
-  watch: {
-    app: {
-      files: 'app/**/*.js',
-      tasks: ['browserify']
-    }
-  }
-}
+  });
+
+  grunt.loadNpmTasks('grunt-browserify');
+  grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+
+  grunt.registerTask('build', ['clean', 'browserify:debug']);
+  grunt.registerTask('default', ['build', 'watch:app']);
+};
